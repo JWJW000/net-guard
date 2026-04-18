@@ -1,131 +1,123 @@
-# AI 内容生产 + 自动发布平台
+# 🌐 NetGuard - macOS 网络流量监控
 
-基于 Rust 的 AI 内容自动生成和发布平台，支持小红书、微信公众号等平台。
+[![Build Status](https://github.com/JWJW000/net-guard/actions/workflows/build-macos.yml/badge.svg)](https://github.com/JWJW000/net-guard/actions)
 
-## 🚀 快速部署
+一个基于终端的 macOS 网络流量监控工具，实时显示流量和进程排名。
 
-### 方式一：Docker 一键部署（推荐）
+![NetGuard 界面预览](docs/screenshot.png)
 
-```bash
-# 克隆代码
-git clone https://github.com/YOUR_USERNAME/ai-content-platform.git
-cd ai-content-platform
+## ✨ 功能特点
 
-# 配置环境变量
-cp .env.production .env
-# 编辑 .env 填入配置
+- 🌐 **实时流量监控** - 显示上传/下载速度
+- 📊 **进程级排名** - 按流量占用排序显示进程
+- 📈 **历史统计** - 7 天数据本地存储
+- 🖥️ **终端界面** - 轻量快速，终端即可运行
+- 🔒 **安全隐私** - 无需特殊权限，不收集任何数据
 
-# 启动服务
-docker-compose -f docker-compose.prod.yml up -d
-```
+## 📦 安装
 
-访问 http://auto.5wjw.cn 即可使用。
+### 方法一：下载预编译版本
 
-### 方式二：本地开发
+1. 进入 [Releases](https://github.com/JWJW000/net-guard/releases) 页面下载最新版本
+2. 解压文件：
+   ```bash
+   tar -xzf net_guard-macos.tar.gz
+   ```
+3. 赋予执行权限：
+   ```bash
+   chmod +x net_guard
+   ```
+4. 运行：
+   ```bash
+   ./net_guard
+   ```
 
-```bash
-# 后端
-cd ai-content-platform
-cargo run
+### 方法二：从源码编译
 
-# 前端
-cd frontend
-npm install
-npm run dev
-```
-
-## 📋 功能
-
-- ✅ 任务管理（创建、启动、停止、删除）
-- ✅ AI 内容生成（支持 OpenAI API）
-- ✅ 内容审核工作流（生成 → 审核 → 发布）
-- ✅ 小红书自动发布框架
-- ✅ Web 管理界面
-- ✅ 日志系统
-
-## 🔧 配置
-
-### 环境变量 (.env)
+需要安装 Rust 环境（推荐使用 [rustup](https://rustup.rs/)）：
 
 ```bash
-# 数据库密码
-DB_PASSWORD=your_secure_password
-
-# OpenAI API Key（可选，不填使用模拟数据）
-OPENAI_API_KEY=sk-xxx
+git clone https://github.com/JWJW000/net-guard.git
+cd net-guard/net_guard
+cargo build --release
+./target/release/net_guard
 ```
 
-### 域名配置
+## 🚀 使用
 
-已配置域名 `auto.5wjw.cn`，Nginx 配置见 `nginx-prod.conf`。
-
-## 🐳 Docker 部署
-
+运行程序：
 ```bash
-# 构建并启动
-docker-compose -f docker-compose.prod.yml up -d --build
-
-# 查看日志
-docker-compose -f docker-compose.prod.yml logs -f
-
-# 停止服务
-docker-compose -f docker-compose.prod.yml down
+./net_guard
 ```
+
+### 快捷键
+
+| 按键 | 功能 |
+|------|------|
+| `q` 或 `Q` | 退出程序 |
+| `Esc` | 退出程序 |
+
+### 界面说明
+
+```
+┌─────────────────────────────────────────────────────┐
+│ 🌐 NetGuard - 网络流量监控                           │
+├─────────────────────────────────────────────────────┤
+│ 状态                                                 │
+│  ↑ 上传:     125.4 KB/s    ↓ 下载:     89.2 KB/s   │
+├─────────────────────────────────────────────────────┤
+│ 实时速度                                              │
+│  ↑ 上传:     125.4 KB/s    ↓ 下载:     89.2 KB/s   │
+├─────────────────────────────────────────────────────┤
+│ 📊 进程排名（按流量）                                │
+│ 进程               ↑ 上传           ↓ 下载          │
+│ ────────────────────────────────────────────        │
+│ WeChat              45.2 KB         30.1 KB        │
+│ Chrome              20.5 KB         15.3 KB        │
+│ Safari             10.2 KB          5.8 KB        │
+└─────────────────────────────────────────────────────┘
+```
+
+## ⚠️ macOS 安全提示
+
+首次在 macOS 上运行第三方应用时，可能会遇到安全提示：
+
+1. **右键打开**：在 Finder 中右键点击 `net_guard`，选择"打开"
+2. **系统设置授权**：进入 `系统设置 > 隐私与安全性`，找到被阻止的提示，点击"仍要打开"
+
+## 🔧 技术栈
+
+- **语言**：Rust
+- **终端UI**：ratatui
+- **数据存储**：SQLite
+- **流量采集**：macOS 原生 `nettop` 命令
 
 ## 📁 项目结构
 
 ```
-ai-content-platform/
-├── src/                    # Rust 后端源码
-│   ├── main.rs
-│   ├── handler/            # HTTP 处理器
-│   ├── service/            # 业务逻辑
-│   ├── repository/         # 数据访问
-│   ├── scheduler/          # 任务调度
-│   ├── publisher/          # 发布系统
-│   └── models/            # 数据模型
-├── frontend/               # React 前端
+net-guard/
+├── net_guard/
 │   ├── src/
-│   │   ├── components/     # UI 组件
-│   │   └── lib/          # API 调用
-│   └── dist/             # 构建产物
-├── docker-compose.yml      # 开发环境
-├── docker-compose.prod.yml # 生产环境
-├── Dockerfile             # 后端构建
-└── nginx-prod.conf        # Nginx 配置
+│   │   ├── main.rs          # 主程序入口
+│   │   ├── collector/        # 数据采集模块
+│   │   │   ├── mod.rs
+│   │   │   ├── nettop.rs    # nettop 命令封装
+│   │   │   └── process.rs    # 进程信息
+│   │   ├── storage/         # 数据存储模块
+│   │   │   ├── mod.rs
+│   │   │   └── database.rs  # SQLite 操作
+│   │   └── utils/           # 工具函数
+│   │       └── mod.rs
+│   └── Cargo.toml
+├── docs/
+│   └── screenshot.png       # 界面截图
+└── README.md
 ```
 
-## 🔌 API 接口
+## 📝 License
 
-| 方法 | 路径 | 描述 |
-|------|------|------|
-| GET | /api/tasks | 获取任务列表 |
-| POST | /api/tasks | 创建任务 |
-| POST | /api/tasks/:id/start | 启动任务 |
-| POST | /api/tasks/:id/stop | 停止任务 |
-| DELETE | /api/tasks/:id | 删除任务 |
-| GET | /api/contents | 获取内容列表 |
-| POST | /api/contents/:id/review | 审核内容 |
-| GET | /api/accounts | 获取账号列表 |
-| POST | /api/accounts | 添加账号 |
-| GET | /api/logs | 获取日志 |
+MIT License
 
-## 📝 工作流程
+## 🙏 感谢
 
-```
-1. 创建任务（设置平台、prompt、cron 表达式）
-2. 启动任务（调度器按 cron 执行）
-3. AI 生成内容（状态：pending_review）
-4. 人工审核（通过/拒绝）
-5. 审核通过后自动发布（状态：published）
-```
-
-## 🔒 安全注意
-
-- 首次部署请修改 `DB_PASSWORD`
-- 生产环境建议启用 HTTPS
-- 定期备份数据库
-
-## License
-
-MIT
+使用 [ratatui](https://github.com/ratatui-org/ratatui) 构建终端界面
