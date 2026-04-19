@@ -45,6 +45,17 @@ impl TrafficCollector {
         }
     }
 
+    /// Create a collector with custom number of samples
+    /// More samples = better capture of intermittent traffic
+    pub fn with_samples(samples: u32) -> Self {
+        Self {
+            nettop: NettopCollector::new().with_samples(samples),
+            last_update: None,
+            last_bytes_in: 0,
+            last_bytes_out: 0,
+        }
+    }
+
     /// Collect current traffic data
     pub fn collect(&mut self) -> Result<Vec<ProcessTraffic>, String> {
         let processes = self.nettop.collect()?;
